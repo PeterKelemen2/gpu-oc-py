@@ -6,6 +6,7 @@ from pynvml import (
     nvmlDeviceResetGpuLockedClocks,
     nvmlDeviceSetGpcClkVfOffset,
     nvmlDeviceSetGpuLockedClocks,
+    nvmlDeviceSetPowerManagementLimit,
     nvmlInit,
     nvmlShutdown,
 )
@@ -29,7 +30,8 @@ class GPUController:
             self._device, min_clock, self._profile.max_core_clock_mhz
         )
         nvmlDeviceSetGpcClkVfOffset(self._device, self._profile.core_offset_mhz)
-        # nvmlDeviceSetPowerManagementLimit(self._device, self._profile.power_limit_watt * 1000)
+        if self._profile.power_limit_watt is not None:
+            nvmlDeviceSetPowerManagementLimit(self._device, self._profile.power_limit_watt * 1000)
 
     def reset_to_safe_defaults(self) -> None:
         """Remove locked clocks and VF offset, returning the GPU to driver defaults."""

@@ -1,0 +1,15 @@
+# GPU OC Configuration
+# Copy this file to config.toml and set all values before running.
+
+[profile]
+# Index of the GPU to control (0 = first GPU)
+gpu_index = 0
+
+# Core clock voltage/frequency offset in MHz
+core_offset_mhz = 0
+
+# Power limit in Watts
+power_limit_watt = 0
+
+# Maximum core clock to lock to in MHz
+max_core_clock_mhz = 0

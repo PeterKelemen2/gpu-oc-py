@@ -5,14 +5,14 @@ import time
 from pynvml import NVMLError
 
 from gpu_oc.clock_query import get_gpu_freqs
-from gpu_oc.config import MONITOR_INTERVAL_SEC, WATCHDOG_INTERVAL_SEC, WATCHDOG_PATH, OCProfile
+from gpu_oc.config import MONITOR_INTERVAL_SEC, WATCHDOG_INTERVAL_SEC, WATCHDOG_PATH, load_profile
 from gpu_oc.gpu_control import GPUController
 from gpu_oc.gpu_monitor import GPUMonitor
 from gpu_oc.watchdog import Watchdog
 
 
 def main() -> None:
-    profile = OCProfile()
+    profile = load_profile()
     freqs = get_gpu_freqs()
 
     controller = GPUController(profile, freqs)
