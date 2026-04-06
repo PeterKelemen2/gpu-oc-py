@@ -16,7 +16,7 @@ def main() -> None:
     freqs = get_gpu_freqs()
 
     controller = GPUController(profile, freqs)
-    monitor = GPUMonitor(controller, MONITOR_INTERVAL_SEC)
+    monitor = GPUMonitor(controller, MONITOR_INTERVAL_SEC, profile.display_manager)
     watchdog = Watchdog(WATCHDOG_PATH, WATCHDOG_INTERVAL_SEC)
 
     monitor.start()

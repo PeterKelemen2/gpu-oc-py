@@ -13,3 +13,7 @@ power_limit_watt = 0
 
 # Maximum core clock to lock to in MHz
 max_core_clock_mhz = 0
+
+# Display manager to restart on a driver crash (e.g. "gdm", "sddm", "lightdm").
+# Comment out to skip driver/DE reload and rely only on the hardware watchdog.
+# display_manager = "gdm"

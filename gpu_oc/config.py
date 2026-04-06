@@ -16,6 +16,10 @@ class OCProfile(BaseModel):
     core_offset_mhz: int = Field(ge=-500, le=500)
     power_limit_watt: int | None = Field(default=None, ge=1, le=600)
     max_core_clock_mhz: int = Field(ge=100, le=4000)
+    # Display manager service name (e.g. "gdm", "sddm", "lightdm").
+    # When set, a driver crash triggers a driver reload + DM restart instead of
+    # relying solely on the hardware watchdog reboot.
+    display_manager: str | None = None
 
     def __str__(self) -> str:
         return (
