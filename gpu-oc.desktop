@@ -1,0 +1,21 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GPU OC Controller
+Comment=NVIDIA GPU Overclocking with Fan Control
+Icon=input-devices
+
+# The GUI launcher script
+Exec=bash -c "cd /opt/gpu-oc && ./scripts/gui.sh"
+
+# Terminal=true  (uncomment if you want a terminal window)
+Terminal=false
+
+# Categories and metadata
+Categories=System;Settings;Utility;
+Keywords=nvidia;gpu;overclock;fan;control;
+StartupNotify=true
+
+# For KDE/GNOME autostart (optional)
+X-GNOME-Autostart-enabled=false
+X-KDE-Autostart-enabled=false

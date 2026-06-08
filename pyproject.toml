@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpu-oc-py"
-version = "0.1.0"
-description = "NVIDIA GPU overclock controller with watchdog and recovery"
+version = "0.2.0"
+description = "NVIDIA GPU overclock controller with watchdog, recovery, and desktop GUI"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -17,9 +17,11 @@ dependencies = [
     "typing-inspection==0.4.2",
     "typing_extensions==4.15.0",
 ]
+optional-dependencies = { gui = ["PyQt6>=6.6.0"] }
 
 [project.scripts]
 gpu-oc = "gpu_oc.app:main"
+gpu-oc-gui = "gpu_oc.ui.app:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

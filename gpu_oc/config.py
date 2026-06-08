@@ -10,6 +10,46 @@ from pydantic import BaseModel, Field, ValidationError
 CONFIG_FILE = Path(os.environ.get("GPU_OC_CONFIG", "config.toml"))
 
 
+class FanCurvePoint(BaseModel):
+    """A single point on the fan curve: (temperature, fan_percent)."""
+    temperature: int = Field(ge=0, le=100)
+    fan_percent: int = Field(ge=0, le=100)
+
+
+class FanProfile(BaseModel):
+    """Fan control settings. Default: auto mode (driver-controlled)."""
+    mode: str = Field(default="auto", pattern="^(auto|curve|manual)$")
+    # Curve points: list of [temperature, fan_percent] pairs
+    # Only used when mode="curve". Must have at least 2 points.
+    curve_points: list[list[int]] = Field(
+        default=[[30, 30], [45, 50], [60, 100]],
+        description="Temperature (0-100°C) to fan % (0-100%) points"
+    )
+
+    @staticmethod
+    def _validate_curve_points(points: list[list[int]]) -> None:
+        """Validate curve points format and ranges."""
+        if len(points) < 2:
+            raise ValueError("Fan curve must have at least 2 points")
+        for i, point in enumerate(points):
+            if not isinstance(point, list) or len(point) != 2:
+                raise ValueError(f"Point {i} must be [temperature, fan_percent]")
+            temp, fan = point
+            if not (0 <= temp <= 100):
+                raise ValueError(f"Point {i}: temperature {temp} out of range [0-100]")
+            if not (0 <= fan <= 100):
+                raise ValueError(f"Point {i}: fan percent {fan} out of range [0-100]")
+        # Check temperatures are ascending
+        for i in range(len(points) - 1):
+            if points[i][0] >= points[i + 1][0]:
+                raise ValueError("Curve temperatures must be in ascending order")
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.mode == "curve":
+            self._validate_curve_points(self.curve_points)
+
+
 class OCProfile(BaseModel):
     """OC settings schema. All fields are required — set them in config.toml."""
 
@@ -48,6 +88,24 @@ def load_profile() -> OCProfile:
     except ValidationError as exc:
         print(f"Error: invalid config.toml:\n{exc}")
         sys.exit(1)
+
+
+def load_fan_profile() -> FanProfile:
+    """Load FanProfile from config.toml, with sensible defaults."""
+    if not CONFIG_FILE.exists():
+        return FanProfile()  # Return default auto mode
+
+    with CONFIG_FILE.open("rb") as f:
+        data = tomllib.load(f)
+
+    try:
+        fan_data = data.get("fan_profile", {})
+        fan_profile = FanProfile(**fan_data)
+        print(f"Loaded fan profile: mode={fan_profile.mode}")
+        return fan_profile
+    except ValidationError as exc:
+        print(f"Warning: invalid fan_profile in config.toml, using defaults:\n{exc}")
+        return FanProfile()  # Fall back to defaults
 
 
 # Hardware watchdog constants

@@ -39,6 +39,10 @@ echo -e "${GREEN}Creating Python virtual environment...${NC}"
 python3 -m venv .venv
 .venv/bin/pip install -q -e .
 
+# Install GUI dependencies (optional)
+echo -e "${GREEN}Installing GUI dependencies...${NC}"
+.venv/bin/pip install -q PyQt6 || echo -e "${YELLOW}Warning: Failed to install PyQt6 (GUI will not work)${NC}"
+
 echo -e "${GREEN}✓ Virtual environment created and dependencies installed${NC}"
 
 # Ensure config directory exists
@@ -63,6 +67,14 @@ fi
 cp systemd/gpu-oc.service /etc/systemd/system/
 chmod 644 /etc/systemd/system/gpu-oc.service
 
+# Install desktop launcher (optional GUI)
+if [[ -f gpu-oc.desktop ]]; then
+    echo -e "${GREEN}Installing desktop launcher...${NC}"
+    cp gpu-oc.desktop /usr/share/applications/
+    chmod 644 /usr/share/applications/gpu-oc.desktop
+    echo -e "${GREEN}✓ Desktop launcher installed${NC}"
+fi
+
 echo -e "${GREEN}Registering systemd service...${NC}"
 systemctl daemon-reload
 systemctl enable gpu-oc
@@ -78,6 +90,11 @@ echo "   sudo systemctl start gpu-oc"
 echo ""
 echo "3. Check service status:"
 echo "   sudo systemctl status gpu-oc"
+echo "   sudo journalctl -u gpu-oc -f"
+echo ""
+echo "4. (Optional) Launch the desktop GUI:"
+echo "   /opt/gpu-oc/scripts/gui.sh"
+echo "   Or search for 'GPU OC Controller' in your application menu"
 echo "   sudo journalctl -u gpu-oc -f"
 echo ""
 echo -e "${YELLOW}WARNING: Incorrect OC settings can damage your GPU!${NC}"

@@ -17,3 +17,12 @@ max_core_clock_mhz = 0
 # Display manager to restart on a driver crash (e.g. "gdm", "sddm", "lightdm").
 # Comment out to skip driver/DE reload and rely only on the hardware watchdog.
 # display_manager = "gdm"
+
+# Fan control settings (optional, defaults to auto mode)
+[fan_profile]
+# Fan control mode: "auto" (driver-controlled), "curve" (temperature-based), or "manual"
+mode = "auto"
+
+# Fan curve points: [temperature (°C), fan % (0-100)]
+# Only used when mode = "curve". Must have at least 2 points in ascending temperature order.
+# curve_points = [[30, 30], [45, 50], [60, 100]]
