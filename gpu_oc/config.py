@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import os
 import sys
 import tomllib
 from pathlib import Path
 
 from pydantic import BaseModel, Field, ValidationError
 
-CONFIG_FILE = Path("config.toml")
+CONFIG_FILE = Path(os.environ.get("GPU_OC_CONFIG", "config.toml"))
 
 
 class OCProfile(BaseModel):

@@ -46,3 +46,7 @@ def main() -> None:
         controller.reset_to_safe_defaults()
         controller.shutdown()
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

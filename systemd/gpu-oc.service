@@ -1,0 +1,38 @@
+[Unit]
+Description=GPU Overclock Controller
+After=multi-user.target
+Requires=basic.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/gpu-oc
+ExecStart=/opt/gpu-oc/.venv/bin/python -m gpu_oc.app
+Environment=GPU_OC_CONFIG=/opt/gpu-oc/config/config.toml
+Environment=PYTHONUNBUFFERED=1
+
+# Restart policy: restart on failure, but stop after 3 restarts in 60 seconds
+Restart=always
+RestartSec=10
+StartLimitAction=stop
+
+# User and security context
+User=root
+Group=root
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gpu-oc
+
+# Process isolation (GPU control requires access to devices)
+PrivateDevices=false
+DevicePolicy=open
+
+# Shutdown behavior
+TimeoutStopSec=10
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

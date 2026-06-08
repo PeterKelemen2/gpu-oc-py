@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpu-oc-py"
+version = "0.1.0"
+description = "NVIDIA GPU overclock controller with watchdog and recovery"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Peter Kelemen", email = "peter.kelemen456@gmail.com" }]
+dependencies = [
+    "annotated-types==0.7.0",
+    "nvidia-ml-py==13.595.45",
+    "pydantic==2.12.5",
+    "typing-inspection==0.4.2",
+    "typing_extensions==4.15.0",
+]
+
+[project.scripts]
+gpu-oc = "gpu_oc.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gpu_oc*"]
