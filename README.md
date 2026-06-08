@@ -28,6 +28,7 @@ sudo scripts/install.sh
 ```
 
 This script will:
+
 - Verify NVIDIA drivers are installed
 - Check for hardware watchdog support
 - Create a Python virtual environment at `/opt/gpu-oc/.venv`
@@ -140,12 +141,32 @@ python3 -m gpu_oc.app
 ```
 
 The app will:
+
 - Load the OC profile from `GPU_OC_CONFIG` (default: `config/config.toml`)
 - Apply GPU overclock settings
 - Start monitoring GPU health
 - Arm the watchdog if `/dev/watchdog` exists
 
 Press `Ctrl+C` to exit; the app will disarm the watchdog and reset the GPU to safe defaults.
+
+### Development
+
+For development and testing, use the `scripts/run.sh` convenience wrapper:
+
+```bash
+sudo scripts/run.sh              # Run the app
+sudo scripts/run.sh --check      # Validate environment setup
+sudo scripts/run.sh --verbose    # Run with Python warnings and unbuffered output
+sudo scripts/run.sh --reload     # Auto-reload on file changes (useful during development)
+sudo scripts/run.sh --help       # Show available options
+```
+
+The `run.sh` script:
+
+- Requires root privileges (like the app itself)
+- Auto-creates a Python virtual environment if needed
+- Auto-copies `config.toml.example` if config is missing
+- Provides feedback about setup status and prerequisites
 
 ### Uninstalling
 
@@ -168,29 +189,35 @@ This will stop the service, disable autostart, and remove `/opt/gpu-oc`.
 ## Troubleshooting
 
 **Config file not found:**
+
 - The install script automatically copies `config.toml.example` to `config.toml`
 - If missing, manually copy: `cp config/config.toml.example config/config.toml`
 
 **Service won't start:**
+
 ```bash
 sudo journalctl -u gpu-oc -n 50  # View last 50 lines of logs
 ```
 
 **Service keeps restarting:**
+
 - Check your `config.toml` for validation errors
 - Verify `gpu_index`, `max_core_clock_mhz`, and other settings are valid
 - Service has a restart limit (3 restarts in 60 seconds) to prevent restart loops
 
 **Cannot open `/dev/watchdog`:**
+
 - Run as root: `sudo systemctl start gpu-oc`
 - Or load a watchdog kernel module: `sudo modprobe softdog` or check BIOS for hardware watchdog
 
 **NVIDIA driver reload fails:**
+
 - There may be processes holding the GPU open (e.g., GUI, CUDA apps)
 - Check running processes: `lsof | grep nvidia`
 - Verify display manager is installed if configured in `config.toml`
 
 **GPU clocks not being applied:**
+
 - Verify root permissions: `sudo systemctl status gpu-oc`
 - Check NVIDIA driver supports clock locking for your GPU model
 - Review logs for specific errors: `sudo journalctl -u gpu-oc -f`
